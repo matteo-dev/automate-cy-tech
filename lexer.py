@@ -3,7 +3,7 @@ import re
 
 # Définition des regex pour les différents types de tokens
 TOKENS = [
-    ('KEYWORD', r'\b(cursor|move|draw|set|if|else|for|while|color|thickness|size|animate|rotate)\b'),
+    ('KEYWORD', r'\b(cursor|move|draw|set|if|else|for|while|color|thickness|size|animate|rotate|degrees)\b'),
     ('NUMBER', r'\b\d+\b'),                       # Nombres
     ('COLOR', r'\b(red|blue|green|black)\b'),     # Couleurs prédéfinies
     ('IDENTIFIER', r'\b[A-Za-z_][A-Za-z0-9_]*\b'), # Identifiants pour variables et curseurs
