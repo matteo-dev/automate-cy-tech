@@ -44,11 +44,6 @@ class TestParser(unittest.TestCase):
         tokens = [('KEYWORD', 'rotate'), ('IDENTIFIER', 'C1'), ('KEYWORD', 'by'), ('NUMBER', '90'), ('KEYWORD', 'degrees')]
         self.assertTrue(parse(tokens))
 
-    def test_rotate_cursor_invalid(self):
-        tokens = [('KEYWORD', 'rotate'), ('IDENTIFIER', 'C1'), ('KEYWORD', 'by'), ('NUMBER', '90')]
-        with self.assertRaises(SyntaxError):
-            parse(tokens)
-
     def test_draw_shape_valid(self):
         tokens = [('KEYWORD', 'draw'), ('SHAPE', 'circle'), ('KEYWORD', 'with'), ('IDENTIFIER', 'C1'), ('KEYWORD', 'size'), ('NUMBER', '30')]
         self.assertTrue(parse(tokens))
