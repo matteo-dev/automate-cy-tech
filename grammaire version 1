@@ -1,0 +1,117 @@
+Grammaire de draw++ (Version 1)
+
+1. Structure générale du programme
+Un programme en draw++ est composé de plusieurs instructions (élémentaires ou évoluées) qui sont exécutées dans l'ordre.
+
+<programme> ::= <instruction> | <instruction> <programme>
+
+2. Instructions élémentaires
+Les instructions élémentaires manipulent principalement le curseur et les formes.
+
+1. Créer un curseur : On peut créer un curseur en définissant ses coordonnées initiales.
+<create_cursor> ::= "cursor" <identifier> "at" <integer> "," <integer>
+
+Exemple :
+cursor C1 at 100, 150
+
+2. Affecter une couleur ou une épaisseur à un curseur :
+<set_color> ::= "set" <identifier> "color" <color>
+<set_thickness> ::= "set" <identifier> "thickness" <integer>
+
+Exemple :
+set C1 color red
+set C1 thickness 3
+
+3. Faire avancer un curseur : Faire un saut de pixels.
+<move_cursor> ::= "move" <identifier> "by" <integer>
+
+Exemple :
+move C1 by 50
+
+4. Faire pivoter un curseur : Rotation du curseur en degrés.
+<rotate_cursor> ::= "rotate" <identifier> "by" <integer> "degrees"
+
+Exemple :
+rotate C1 by 90 degrees
+
+5. Dessiner une forme : On peut dessiner des segments, carrés, cercles, etc.
+<draw_shape> ::= "draw" <shape> "with" <identifier> ["size" <integer>]
+<shape> ::= "segment" | "circle" | "square" | "arc" | "point"
+
+Exemple :
+draw circle with C1 size 50
+
+6. Animer un dessin :
+<animate> ::= "animate" <identifier> "with" <animation_type> "for" <duration>
+<animation_type> ::= "rotate" | "move"
+<duration> ::= <integer> "seconds"
+
+Exemple :
+animate C1 with rotate for 5 seconds
+
+3. Instructions évoluées
+Ces instructions introduisent des fonctionnalités plus avancées comme les conditions, les boucles et les variables.
+
+1. Assignation : On peut affecter une valeur à une variable.
+<assign> ::= <identifier> "=" <expression>
+<expression> ::= <integer> | <identifier> | <expression> "+" <expression>
+
+Exemple :
+x = 10
+y = x + 5
+
+2. Blocs d'instructions : Regrouper plusieurs instructions dans un bloc.
+<block> ::= "begin" <instruction> "end"
+
+Exemple :
+begin
+   move C1 by 50
+   rotate C1 by 90 degrees
+end
+
+3. Conditions (if/else) :
+<if_statement> ::= "if" "(" <condition> ")" <instruction> [ "else" <instruction> ]
+<condition> ::= <expression> "<" <expression> | <expression> ">" <expression> | <expression> "==" <expression>
+
+Exemple :
+if (x > 5) move C1 by 10
+else rotate C1 by 45 degrees
+
+4. Boucles (for, while) :
+<for_loop> ::= "for" <identifier> "=" <expression> "to" <expression> <block>
+<while_loop> ::= "while" "(" <condition> ")" <block>
+
+Exemple de boucle for :
+for i = 0 to 10
+begin
+   move C1 by 10
+end
+
+Exemple de boucle while :
+while (x < 100)
+begin
+   move C1 by 5
+end
+
+4. Instructions supplémentaires
+- Zoomer, déplacer, sélectionner une partie du dessin :
+<zoom> ::= "zoom" <identifier> "by" <percentage>
+<move_shape> ::= "move" <shape> "to" <integer> "," <integer>
+<select_shape> ::= "select" <shape>
+
+Exemple :
+select circle
+move circle to 200, 300
+zoom C1 by 150%
+
+5. Programme complet (exemple)
+Voici un exemple complet d’un petit programme draw++ qui dessine un cercle et le fait pivoter.
+
+cursor C1 at 100, 100
+set C1 color blue
+set C1 thickness 2
+move C1 by 50
+draw circle with C1 size 30
+rotate C1 by 90 degrees
+animate C1 with rotate for 5 seconds
+"""
