@@ -13,6 +13,24 @@ Le projet est réalisé dans le cadre de l'apprentissage en ING1 Génie Informat
 - **Compilateur en Python** qui traduit le code `draw++` en un code intermédiaire C.
 - **Système de correction d'erreurs** intégré pour aider à identifier et corriger les erreurs de syntaxe dans les programmes.
 
+## Instructions 
+
+— Créer un curseur. Vous pouvez en avoir plusieurs. Un curseur a une position actuelle sur
+l’écran, souvent représentée par des coordonnées (x, y). Il peut être visible ou non sur l’écran.
+— Affecter une couleur ou une épaisseur à un curseur.
+— Faire avancer (un saut) un curseur de manière relative exprimée en pixels.
+— Faire pivoter un curseur d’une quantité relative exprimée en degrés.
+— Dessiner, pour un curseur donné, une forme (segment, carrée, cercle, point, arc, ...). Les caractéristiques
+des formes doivent être spécifiées comme opérandes des instructions.
+— Animer un dessin.
+— Et d’autres instructions à proposer.
+
+— Instruction d’assignation : Affectation de valeurs à des variables .
+— Instructions de Bloc : Regroupement d’instructions en une seule unité.
+— Instructions Conditionnelles : if, else pour exécuter du code en fonction de conditions.
+— Instructions Répétitives : Boucles for, while, do-while pour répéter des instructions plusieurs
+fois.
+
 ## Auteurs
 
 - Aicha
