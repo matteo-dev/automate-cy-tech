@@ -30,47 +30,43 @@ l’écran, souvent représentée par des coordonnées (x, y). Il peut être vis
 - Instructions Répétitives : Boucles for, while, do-while pour répéter des instructions plusieurs
 fois.
 
-##Listes des tokens 
-
-1. Liste des Tokens
-Les tokens sont les éléments de base que l'analyseur lexical va extraire du code source. Chaque instruction, mot-clé, opérateur ou identifiant est transformé en un token que l'analyseur syntaxique utilisera ensuite.
-
-Voici la liste des tokens pour le langage draw++ :
+## Listes des tokens 
 
 a. Mots-clés
 Ces mots-clés sont réservés et ont une signification particulière dans le langage.
-
-cursor : pour créer un curseur.
-move : pour déplacer un curseur.
-rotate : pour faire pivoter un curseur.
-set : pour affecter une couleur ou une épaisseur.
-draw : pour dessiner une forme.
-animate : pour animer un dessin.
-if, else : pour les conditions.
-for, while : pour les boucles.
-begin, end : pour délimiter des blocs d'instructions.
-to : utilisé dans les boucles for.
-color, thickness, size : pour définir des propriétés.
+- cursor : pour créer un curseur.
+- move : pour déplacer un curseur.
+- rotate : pour faire pivoter un curseur.
+- set : pour affecter une couleur ou une épaisseur.
+- draw : pour dessiner une forme.
+- animate : pour animer un dessin.
+- if, else : pour les conditions.
+- for, while : pour les boucles.
+- begin, end : pour délimiter des blocs d'instructions.
+- to : utilisé dans les boucles for.
+- color, thickness, size : pour définir des propriétés.
+  
 b. Symboles
 Ce sont les opérateurs et séparateurs utilisés pour structurer le code.
-
-= : opérateur d'assignation.
-+, -, *, / : opérateurs arithmétiques.
-<, >, == : opérateurs de comparaison.
-, : séparateur pour les coordonnées ou paramètres.
-(, ) : parenthèses pour regrouper des expressions.
-{, } : accolades pour les blocs d'instructions.
-: : souvent utilisé pour la syntaxe conditionnelle.
-c. Identifiants
+- = : opérateur d'assignation.
+- +, -, *, / : opérateurs arithmétiques.
+- <, >, == : opérateurs de comparaison.
+- , : séparateur pour les coordonnées ou paramètres.
+- (, ) : parenthèses pour regrouper des expressions.
+- {, } : accolades pour les blocs d'instructions.
+- : : souvent utilisé pour la syntaxe conditionnelle.
+- c. Identifiants
+  
 Noms de curseurs ou de variables définis par l'utilisateur.
 Exemple : C1, x, y.
+
 d. Littéraux
 Ce sont les valeurs numériques ou les valeurs de propriété qui peuvent apparaître dans les instructions.
+- Nombres : entiers pour les coordonnées, tailles, etc.
+- Couleurs : noms de couleurs prédéfinies (red, blue, green, etc.).
 
-Nombres : entiers pour les coordonnées, tailles, etc.
-Couleurs : noms de couleurs prédéfinies (red, blue, green, etc.).
 e. Formes
-Ces tokens représentent les différentes formes à dessiner : segment, circle, square, arc, point.
+- Ces tokens représentent les différentes formes à dessiner : segment, circle, square, arc, point.
 
 ## Auteurs
 
