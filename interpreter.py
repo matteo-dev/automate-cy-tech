@@ -62,6 +62,25 @@ def interpret(tokens):
         cursors[name] = Cursor(name, x, y)
         print(f"Cursor {name} created at ({x}, {y})")
 
+    
+    elif tokens[0][1] == 'if':
+        condition = tokens[1][1]  # Exemple de récupération de la condition
+        if evaluate_condition(condition):  # Implémente la fonction `evaluate_condition`
+            # Exécuter le bloc d'instructions
+            interpret_block(tokens[3:])  # Fonction pour exécuter un bloc d'instructions
+
+    elif tokens[0][1] == 'for':
+        var_name = tokens[1][1]
+        start = int(tokens[3][1])
+        end = int(tokens[5][1])
+        for i in range(start, end + 1):
+            interpret_block(tokens[7:])  # Exécuter le bloc d'instructions
+
+    elif tokens[0][1] == 'while':
+        condition = tokens[1][1]
+        while evaluate_condition(condition):  # Boucle tant que la condition est vraie
+            interpret_block(tokens[3:])
+            
     elif tokens[0][1] == 'move':
         name = tokens[1][1]
         dx = int(tokens[3][1])
@@ -104,3 +123,7 @@ def interpret(tokens):
 
     else:
         raise ValueError(f"Unknown instruction: {tokens[0][1]}")
+
+def interpret_block(block_tokens):
+    for instruction in block_tokens:
+        interpret(instruction)
