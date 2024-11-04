@@ -1,4 +1,6 @@
 #Tests pour l'analyseur lexical
+from lexer import tokenize
+
 if __name__ == "__main__":
     example_code = """
     cursor C1 at 100, 150
