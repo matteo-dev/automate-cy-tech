@@ -32,15 +32,16 @@ def generate_code(tokens):
     if tokens[0][1] == 'cursor':
         return generate_create_cursor(tokens)
     elif tokens[0][1] == 'set' and tokens[2][1] == 'color':
-        return generate_set_color(tokens)
+        return f"if (!{generate_set_color(tokens)}) {{ return 1; }}"
     elif tokens[0][1] == 'move':
-        return generate_move_cursor(tokens)
+        return f"if (!{generate_move_cursor(tokens)}) {{ return 1; }}"
     elif tokens[0][1] == 'rotate':
-        return generate_rotate_cursor(tokens)
+        return f"if (!{generate_rotate_cursor(tokens)}) {{ return 1; }}"
     elif tokens[0][1] == 'draw':
-        return generate_draw_shape(tokens)
+        return f"if (!{generate_draw_shape(tokens)}) {{ return 1; }}"
     else:
         raise ValueError(f"Unknown instruction: {tokens[0][1]}")
+
 
 def generate_c_code(instructions):
     code_lines = [
