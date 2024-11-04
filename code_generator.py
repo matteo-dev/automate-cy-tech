@@ -1,5 +1,13 @@
 #Génère le code C à partir des instructions 
 # code_generator.py
+# Initialiser l'interface
+from  interpreter import interpret
+import time
+import tkinter as tk
+from  interface import DrawApp  # Assure-toi que DrawApp est dans un fichier nommé draw_ui.py
+
+root = tk.Tk()
+app = DrawApp(root)
 
 def generate_if_statement(tokens):
     condition = tokens[1][1]  # Récupérer la condition
@@ -89,6 +97,10 @@ if __name__ == "__main__":
         [('KEYWORD', 'rotate'), ('IDENTIFIER', 'C1'), ('KEYWORD', 'by'), ('NUMBER', '90'), ('KEYWORD', 'degrees')],
         [('KEYWORD', 'draw'), ('SHAPE', 'circle'), ('KEYWORD', 'with'), ('IDENTIFIER', 'C1'), ('KEYWORD', 'size'), ('NUMBER', '30')],
     ]
+    for instruction in instructions:
+      interpret(instruction)
+    root.mainloop()  # Lancer l'interface graphique
+
 
     c_code = generate_c_code(instructions)
     with open("output.c", "w") as file:
