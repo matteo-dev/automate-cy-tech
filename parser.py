@@ -2,6 +2,25 @@
 class SyntaxError(Exception):
     pass
 
+def parse_if_statement(tokens):
+    # Exemple de structure : "if <CONDITION> { <BLOC_D'INSTRUCTIONS> }"
+    if tokens[0][1] != 'if' or tokens[1][0] != 'CONDITION':
+        raise SyntaxError("Syntax Error: Expected 'if <CONDITION> { ... }'")
+    # On pourrait ici ajouter la logique pour analyser un bloc d'instructions
+    return True
+
+def parse_for_loop(tokens):
+    # Exemple de structure : "for <ID> from <NUMBER> to <NUMBER> { <BLOC_D'INSTRUCTIONS> }"
+    if len(tokens) < 9 or tokens[0][1] != 'for' or tokens[2][1] != 'from' or tokens[4][1] != 'to':
+        raise SyntaxError("Syntax Error: Expected 'for <ID> from <NUMBER> to <NUMBER> { ... }'")
+    return True
+
+def parse_while_loop(tokens):
+    # Exemple de structure : "while <CONDITION> { <BLOC_D'INSTRUCTIONS> }"
+    if tokens[0][1] != 'while' or tokens[1][0] != 'CONDITION':
+        raise SyntaxError("Syntax Error: Expected 'while <CONDITION> { ... }'")
+    return True
+    
 # Règle pour créer un curseur: "cursor <ID> at <NUMBER>, <NUMBER>"
 def parse_create_cursor(tokens):
     if len(tokens) != 5:
@@ -96,6 +115,12 @@ def parse_draw_shape(tokens):
 def parse(tokens):
     if not tokens:
         return
+    if tokens[0][1] == 'if':
+        return parse_if_statement(tokens)
+    elif tokens[0][1] == 'for':
+        return parse_for_loop(tokens)
+    elif tokens[0][1] == 'while':
+        return parse_while_loop(tokens)
     if tokens[0][1] == 'cursor':
         return parse_create_cursor(tokens)
     elif tokens[0][1] == 'set' and tokens[2][1] == 'color':
