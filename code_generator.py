@@ -1,6 +1,20 @@
 #Génère le code C à partir des instructions 
 # code_generator.py
 
+def generate_if_statement(tokens):
+    condition = tokens[1][1]  # Récupérer la condition
+    return f"if ({condition}) {{\n    // Code généré pour le bloc\n}}"
+
+def generate_for_loop(tokens):
+    var_name = tokens[1][1]
+    start = tokens[3][1]
+    end = tokens[5][1]
+    return f"for (int {var_name} = {start}; {var_name} <= {end}; {var_name}++) {{\n    // Code généré pour le bloc\n}}"
+
+def generate_while_loop(tokens):
+    condition = tokens[1][1]
+    return f"while ({condition}) {{\n    // Code généré pour le bloc\n}}"
+    
 def generate_create_cursor(tokens):
     name = tokens[1][1]
     x = tokens[3][1]
@@ -29,6 +43,12 @@ def generate_draw_shape(tokens):
     return f"draw_{shape}(&{name}, {size});"
 
 def generate_code(tokens):
+     if tokens[0][1] == 'if':
+        return generate_if_statement(tokens)
+    elif tokens[0][1] == 'for':
+        return generate_for_loop(tokens)
+    elif tokens[0][1] == 'while':
+        return generate_while_loop(tokens)
     if tokens[0][1] == 'cursor':
         return generate_create_cursor(tokens)
     elif tokens[0][1] == 'set' and tokens[2][1] == 'color':
