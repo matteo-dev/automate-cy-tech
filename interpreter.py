@@ -1,5 +1,11 @@
 #interprète du langage draw++
 import time
+import tkinter as tk
+from  interface import DrawApp  # Assure-toi que DrawApp est dans un fichier nommé draw_ui.py
+
+# Initialiser l'interface
+root = tk.Tk()
+app = DrawApp(root)
 
 # Classe pour représenter un curseur avec position, couleur et épaisseur
 class Cursor:
@@ -56,6 +62,24 @@ cursors = {}
 
 # Fonction principale d'interprétation
 def interpret(tokens):
+    if tokens[0][1] == 'draw' and tokens[1][1] == 'circle':
+        x, y = 150, 150  # Remplacer par la position du curseur si nécessaire
+        size = int(tokens[5][1])
+        app.draw_circle(x, y, size, "black")
+
+    elif tokens[0][1] == 'draw' and tokens[1][1] == 'square':
+        x, y = 200, 200  # Position par défaut ou calculée
+        size = int(tokens[5][1])
+        app.draw_square(x, y, size, "blue")
+
+    # Autres instructions draw++ à intégrer
+
+    # Pour gérer le mouvement, modifier la position et mettre à jour l'affichage
+    elif tokens[0][1] == 'move':
+        dx = int(tokens[3][1])
+        cursor = {'x': 150, 'y': 150}  # Exemple de curseur
+        app.move_cursor(cursor, dx, 0)  # Déplacement uniquement horizontal pour cet exemple
+
     if tokens[0][1] == 'cursor':
         name = tokens[1][1]
         x, y = int(tokens[3][1]), int(tokens[4][1])
@@ -127,3 +151,9 @@ def interpret(tokens):
 def interpret_block(block_tokens):
     for instruction in block_tokens:
         interpret(instruction)
+
+def interpret_with_ui(app, tokens):
+    if tokens[0][1] == 'draw' and tokens[1][1] == 'circle':
+        x, y = 150, 150  # Position par défaut ou calculée
+        size = int(tokens[5][1])
+        app.draw_circle(x, y, size, "black")
