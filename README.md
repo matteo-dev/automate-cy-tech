@@ -4,7 +4,7 @@
 
 **draw++** est un langage de programmation graphique conçu pour dessiner et manipuler des formes sur un écran via des instructions simples et avancées. Ce projet vise à développer un environnement de développement intégré (IDE), un compilateur en Python, et un code intermédiaire en C pour exécuter des programmes écrits dans ce langage.
 
-Le projet est réalisé dans le cadre de l'apprentissage en ING1 Génie Mathématique, avec une équipe de 4 à 5 personnes.
+Le projet est réalisé dans le cadre d'un apprentissage en ING1 Génie Mathématique, avec une équipe de 4 à 5 personnes.
 
 ## Fonctionnalités
 
