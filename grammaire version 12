@@ -1,4 +1,4 @@
-Grammaire de draw++ (Version 1)
+Grammaire de draw++ (Version 12)
 
 1. Structure générale du programme
 Un programme en draw++ est composé de plusieurs instructions (élémentaires ou évoluées) qui sont exécutées dans l'ordre.
