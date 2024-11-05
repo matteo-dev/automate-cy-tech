@@ -1,1 +1,1 @@
-#gestion des erreurs (syntaxe et grammaire)
+#gestion des erreurs (syntaxe et grammaire possiblement inutile)
