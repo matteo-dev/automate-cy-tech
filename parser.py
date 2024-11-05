@@ -1,27 +1,30 @@
-#analyseur syntaxique (parsing)
+# Classe pour gérer les erreurs de syntaxe personnalisées
 class SyntaxError(Exception):
     pass
 
+# Analyse de la structure d'une instruction "if"
 def parse_if_statement(tokens):
     # Exemple de structure : "if <CONDITION> { <BLOC_D'INSTRUCTIONS> }"
     if tokens[0][1] != 'if' or tokens[1][0] != 'CONDITION':
         raise SyntaxError("Syntax Error: Expected 'if <CONDITION> { ... }'")
-    # On pourrait ici ajouter la logique pour analyser un bloc d'instructions
+    # Ici, la logique pour analyser un bloc d'instructions peut être ajoutée
     return True
 
+# Analyse de la structure d'une boucle "for"
 def parse_for_loop(tokens):
     # Exemple de structure : "for <ID> from <NUMBER> to <NUMBER> { <BLOC_D'INSTRUCTIONS> }"
     if len(tokens) < 9 or tokens[0][1] != 'for' or tokens[2][1] != 'from' or tokens[4][1] != 'to':
         raise SyntaxError("Syntax Error: Expected 'for <ID> from <NUMBER> to <NUMBER> { ... }'")
     return True
 
+# Analyse de la structure d'une boucle "while"
 def parse_while_loop(tokens):
     # Exemple de structure : "while <CONDITION> { <BLOC_D'INSTRUCTIONS> }"
     if tokens[0][1] != 'while' or tokens[1][0] != 'CONDITION':
         raise SyntaxError("Syntax Error: Expected 'while <CONDITION> { ... }'")
     return True
-    
-# Règle pour créer un curseur: "cursor <ID> at <NUMBER>, <NUMBER>"
+
+# Analyse de l'instruction pour créer un curseur : "cursor <ID> at <NUMBER>, <NUMBER>"
 def parse_create_cursor(tokens):
     if len(tokens) != 5:
         raise SyntaxError("Syntax Error: Expected 'cursor <ID> at <NUMBER>, <NUMBER>'")
@@ -35,7 +38,7 @@ def parse_create_cursor(tokens):
         raise SyntaxError("Syntax Error: Expected two numbers for the position")
     return True
 
-# Règle pour affecter une couleur: "set <ID> color <COLOR>"
+# Analyse de l'instruction pour définir une couleur : "set <ID> color <COLOR>"
 def parse_set_color(tokens):
     if len(tokens) != 4:
         raise SyntaxError("Syntax Error: Expected 'set <ID> color <COLOR>'")
@@ -49,7 +52,7 @@ def parse_set_color(tokens):
         raise SyntaxError("Syntax Error: Expected a valid color")
     return True
 
-# Règle pour affecter une épaisseur: "set <ID> thickness <NUMBER>"
+# Analyse de l'instruction pour définir l'épaisseur : "set <ID> thickness <NUMBER>"
 def parse_set_thickness(tokens):
     if len(tokens) != 4:
         raise SyntaxError("Syntax Error: Expected 'set <ID> thickness <NUMBER>'")
@@ -63,7 +66,7 @@ def parse_set_thickness(tokens):
         raise SyntaxError("Syntax Error: Expected a valid number for thickness")
     return True
 
-# Règle pour déplacer un curseur: "move <ID> by <NUMBER>"
+# Analyse de l'instruction pour déplacer un curseur : "move <ID> by <NUMBER>"
 def parse_move_cursor(tokens):
     if len(tokens) != 4:
         raise SyntaxError("Syntax Error: Expected 'move <ID> by <NUMBER>'")
@@ -77,7 +80,7 @@ def parse_move_cursor(tokens):
         raise SyntaxError("Syntax Error: Expected a valid number for movement")
     return True
 
-# Règle pour faire pivoter un curseur: "rotate <ID> by <NUMBER> degrees"
+# Analyse de l'instruction pour faire pivoter un curseur : "rotate <ID> by <NUMBER> degrees"
 def parse_rotate_cursor(tokens):
     if len(tokens) != 6:
         raise SyntaxError("Syntax Error: Expected 'rotate <ID> by <NUMBER> degrees'")
@@ -93,7 +96,7 @@ def parse_rotate_cursor(tokens):
         raise SyntaxError("Syntax Error: Expected 'degrees' after number")
     return True
 
-# Règle pour dessiner une forme: "draw <SHAPE> with <ID> size <NUMBER>"
+# Analyse de l'instruction pour dessiner une forme : "draw <SHAPE> with <ID> size <NUMBER>"
 def parse_draw_shape(tokens):
     if len(tokens) != 6:
         raise SyntaxError("Syntax Error: Expected 'draw <SHAPE> with <ID> size <NUMBER>'")
@@ -111,7 +114,7 @@ def parse_draw_shape(tokens):
         raise SyntaxError("Syntax Error: Expected a valid number for size")
     return True
 
-# Fonction principale de parsing, qui appelle les règles spécifiques en fonction de l'instruction
+# Fonction principale de parsing qui appelle les règles spécifiques en fonction de l'instruction
 def parse(tokens):
     if not tokens:
         return
@@ -121,7 +124,7 @@ def parse(tokens):
         return parse_for_loop(tokens)
     elif tokens[0][1] == 'while':
         return parse_while_loop(tokens)
-    if tokens[0][1] == 'cursor':
+    elif tokens[0][1] == 'cursor':
         return parse_create_cursor(tokens)
     elif tokens[0][1] == 'set' and tokens[2][1] == 'color':
         return parse_set_color(tokens)
