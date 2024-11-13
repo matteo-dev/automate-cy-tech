@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automate CY Tech - Homepage</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Sidebar with Navigation -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h1>Automate CY Tech</h1>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="sidebar-nav">
+            <a href="/">Home</a>
+            <a href="/drawing_tool">Drawing Tool</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/about">About</a>
+        </nav>
+
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Automate CY Tech</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="container">
+        <!-- Main Header Section -->
+        <div class="home-header">
+            <h1>Automate CY Tech</h1>
+            <p>Transform your ideas into visuals with easy drawing tools</p>
+            <button class="get-started-btn" onclick="window.location.href='/drawing_tool'">Get Started</button>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <div class="feature-box">
+                <h2>Easy Drawing Commands</h2>
+                <p>Create visuals effortlessly with simple commands.</p>
+            </div>
+            <div class="feature-box">
+                <h2>Save and Manage Drawings</h2>
+                <p>Store your art, revisit, and edit anytime.</p>
+            </div>
+            <div class="feature-box">
+                <h2>Real-Time Preview</h2>
+                <p>See your drawing come to life as you create.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Automate CY Tech | <a href="/about">About</a> | <a href="/contact">Contact Us</a></p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/homepage.js') }}"></script>
+</body>
+</html>

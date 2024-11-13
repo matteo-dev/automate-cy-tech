@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Debug Python Script",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/path/to/your_script.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "C: Debug C Executable",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/Users/manalmetwally/Desktop/automate-cy-tech-main/build/Debug/outDebug",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for lldb",
+          "text": "settings set target.inline-breakpoint-strategy always",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/manalmetwally/Desktop/automate-cy-tech-main",
+      "program": "/Users/manalmetwally/Desktop/automate-cy-tech-main/build/Debug/outDebug"
+    }
+  ]
+}

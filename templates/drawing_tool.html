@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing Tool - Automate CY Tech</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Sidebar with Navigation and Drawing History -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h1>Automate CY Tech</h1>
+        </div>
+    
+        <!-- Navigation Links -->
+        <nav class="sidebar-nav">
+            <a href="/">Home</a>
+            <a href="/drawing_tool">Drawing Tool</a>
+            <a href="/contact">Contact Us</a>
+        </nav>
+    
+        <!-- Scrollable History Section -->
+        <div class="sidebar-section">
+            <h2>Drawing History</h2>
+            <ul id="drawingList">
+                <!-- Dynamically populated drawing history -->
+            </ul>
+        </div>
+    
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Automate CY Tech</p>
+        </div>
+    </aside>
+    
+
+    <!-- Main Content Area -->
+    <main class="container">
+        <h2>Draw Something Cool!</h2>
+        <p>Select a shape and customize its properties to create your masterpiece.</p>
+        
+        <!-- Drawing Actions Dropdowns -->
+        <div class="drawing-controls">
+            <label for="shapeSelect">Choose a shape:</label>
+            <select id="shapeSelect">
+                <option value="circle">Circle</option>
+                <option value="rectangle">Rectangle</option>
+                <option value="square">Square</option>
+                <option value="line">Line</option>
+            </select>
+        </div>
+
+        <!-- Interactive Prompts for Properties -->
+        <div id="propertyInputs">
+            <div id="cursorPosition">
+                <label>Set Cursor Position:</label>
+                <input type="number" id="cursorX" placeholder="X coordinate">
+                <input type="number" id="cursorY" placeholder="Y coordinate">
+            </div>
+
+            <div id="shapeSize">
+                <label>Size:</label>
+                <input type="number" id="size" placeholder="Size (e.g., radius for circles)">
+            </div>
+
+            <div id="shapeColor">
+                <label>Shape Color:</label>
+                <input type="color" id="colorPicker" value="#000000">
+            </div>
+            
+            <!-- New Canvas Background Color Picker -->
+            <div id="canvasColor">
+                <label>Canvas Background Color:</label>
+                <input type="color" id="canvasColorPicker" value="#ffffff">
+            </div>
+        </div>
+
+        <!-- Drawing Canvas -->
+        <div class="canvas-container">
+            <canvas id="drawingCanvas" width="600" height="400"></canvas>
+        </div>
+
+        <!-- Button Container for Actions -->
+        <div id="buttonContainer">
+            <button id="addShapeBtn" class="control-btn">Add Shape to Canvas</button>
+            <button id="clearBtn" class="control-btn">Clear Canvas</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Automate CY Tech | About | Contact Us</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/drawing_tool.js') }}"></script>
+</body>
+</html>
