@@ -76,3 +76,29 @@ def load_drawing(drawing_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/add_shape', methods=['POST'])
+def add_shape():
+    data = request.get_json()
+
+    # Debug: Log received data
+    print("Received data:", data)
+
+    # Extract data
+    shape = data.get('shape')
+    x = data.get('x')
+    y = data.get('y')
+    size = data.get('size')
+    color = data.get('color')
+
+    # Validate inputs
+    if not all([shape, isinstance(x, int), isinstance(y, int), isinstance(size, int), color]):
+        return jsonify({'success': False, 'error': 'Invalid input data.'})
+
+    if size <= 0:
+        return jsonify({'success': False, 'error': 'Size must be greater than 0.'})
+
+    # Process and respond
+    # (Here, you can add code to store the shape data in the database if needed)
+    print(f"Shape added: {shape}, Position: ({x}, {y}), Size: {size}, Color: {color}")
+    return jsonify({'success': True, 'message': 'Shape added successfully!'})

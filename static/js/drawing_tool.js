@@ -63,21 +63,43 @@ function drawShape(shape, size) {
     ctx.closePath();
 }
 
-// Save Drawing
-document.getElementById('saveBtn').addEventListener('click', () => {
-    const title = document.getElementById('title').value || "Untitled";
-    const commands = JSON.stringify(getCommands()); // Replace with actual function to get current commands
+document.addEventListener('DOMContentLoaded', () => {
+    const saveBtn = document.getElementById('saveBtn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            const titleElement = document.getElementById('title');
+            if (!titleElement) {
+                console.error("Title input field not found.");
+                return;
+            }
 
-    fetch('/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, commands })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        loadDrawingList(); // Reload the drawing list
-    });
+            const title = titleElement.value || "Untitled";
+            const commands = JSON.stringify(getCommands()); // Replace with actual function to get current commands
+
+            // Perform fetch to save the drawing
+            fetch('/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, commands })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                loadDrawingList(); // Reload the drawing list
+            })
+            .catch(err => {
+                console.error("Error saving drawing:", err);
+                alert("An error occurred while saving the drawing. Please try again.");
+            });
+        });
+    } else {
+        console.error("Save button not found in the DOM.");
+    }
 });
 
 // Load Drawing List
@@ -112,19 +134,8 @@ function loadDrawing(drawingId) {
 // Load the drawing list on page load
 window.onload = loadDrawingList;
 
-// Add shape to canvas on button click
 addShapeBtn.addEventListener('click', () => {
-    const shape = shapeSelect.value;
-    const x = Number(cursorXInput.value) || 0;
-    const y = Number(cursorYInput.value) || 0;
-    const size = Number(sizeInput.value) || 20;
-    const color = colorPicker.value;
-
-    cursorPosition = { x, y };
-    ctx.fillStyle = color;
-    ctx.strokeStyle = color;
-
-    drawShape(shape, size);
+    alert("Coucou mec t'as clique sur le bouton")
 });
 
 // Clear the canvas on button click
@@ -163,5 +174,86 @@ toggleSidebarBtn.addEventListener('click', () => {
     } else {
         sidebar.style.width = '300px';
         Array.from(sidebar.querySelectorAll('a, h2, ul, p')).forEach(el => el.style.display = 'block');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Get references to the button and inputs
+    const addShapeBtn = document.getElementById('addShapeBtn');
+    const shapeSelect = document.getElementById('shapeSelect');
+    const cursorXInput = document.getElementById('cursorX');
+    const cursorYInput = document.getElementById('cursorY');
+    const sizeInput = document.getElementById('size');
+    const colorPicker = document.getElementById('colorPicker');
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+
+    if (addShapeBtn) {
+        addShapeBtn.addEventListener('click', () => {
+            // Collect user input
+            const shape = shapeSelect.value;
+            const x = parseInt(cursorXInput.value, 10);
+            const y = parseInt(cursorYInput.value, 10);
+            const size = parseInt(sizeInput.value, 10);
+            const color = colorPicker.value;
+
+            // Validate inputs
+            if (isNaN(x) || isNaN(y) || isNaN(size) || size <= 0) {
+                alert("Please provide valid values for X, Y, and size (greater than 0).");
+                return;
+            }
+
+            // Send data to the backend
+            fetch('/add_shape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shape, x, y, size, color }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Draw the shape on the canvas
+                        drawShapeOnCanvas(ctx, shape, x, y, size, color);
+                        console.log('Shape added successfully:', data);
+                    } else {
+                        alert(`Error adding shape: ${data.error}`);
+                    }
+                })
+                .catch((err) => {
+                    console.error('Request failed:', err);
+                    alert('An error occurred while adding the shape.');
+                });
+        });
+    } else {
+        console.error("Add Shape button not found in the DOM.");
+    }
+
+    // Helper function to draw shapes on the canvas
+    function drawShapeOnCanvas(ctx, shape, x, y, size, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+
+        switch (shape) {
+            case 'circle':
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+            case 'rectangle':
+                ctx.fillRect(x - size / 2, y - size / 2, size * 2, size);
+                break;
+            case 'square':
+                ctx.fillRect(x - size / 2, y - size / 2, size, size);
+                break;
+            case 'line':
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + size, y);
+                ctx.strokeStyle = color;
+                ctx.stroke();
+                break;
+            default:
+                alert("Unknown shape type selected.");
+        }
+
+        ctx.closePath();
     }
 });
