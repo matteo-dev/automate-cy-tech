@@ -72,15 +72,25 @@ body, html {
     color: #888888;
 }
 
-/* Collapsible Sidebar */
+/* Sidebar in collapsed mode with only icons */
 #sidebar.collapsed {
-    width: 60px;
+    width: 60px; /* Shrink sidebar width */
 }
 
 #sidebar.collapsed .sidebar-nav a {
-    font-size: 0.8rem;
     text-align: center;
-    overflow: hidden;
+    font-size: 1rem;
+    padding: 10px;
+    display: block;
+}
+
+#sidebar.collapsed .sidebar-nav a:hover {
+    background-color: #444;
+    color: #ff7f50;
+}
+
+#sidebar.collapsed .sidebar-header, #sidebar.collapsed .sidebar-footer {
+    display: none; /* Hide unnecessary content */
 }
 
 /* Main Container */
@@ -177,13 +187,18 @@ body, html {
 /* Button Container Styling */
 #buttonContainer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    width: 100%;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    justify-content: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 1rem; /* Ensure spacing between buttons */
+    margin-top: 1.5rem;
+    padding: 0 1rem; /* Add breathing room */
+}
+
+@media (max-width: 768px) {
+    #buttonContainer {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: center;
+    }
 }
 
 .control-btn {
@@ -280,9 +295,16 @@ body, html {
 
 /* Centering Canvas Area */
 .canvas-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
+    position: relative;
+    overflow: auto; /* Allow scrolling if content overflows */
+    max-width: 100%; /* Responsive canvas width */
+    max-height: 400px; /* Limit canvas height */
+}
+
+#drawingCanvas {
+    max-width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 auto; /* Center canvas */
 }
 
 /* Responsive Design Improvements */

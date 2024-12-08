@@ -134,8 +134,38 @@ function loadDrawing(drawingId) {
 // Load the drawing list on page load
 window.onload = loadDrawingList;
 
-addShapeBtn.addEventListener('click', () => {
-    alert("Coucou mec t'as clique sur le bouton")
+document.addEventListener('DOMContentLoaded', function () {
+    const addShapeBtn = document.getElementById('addShapeBtn');
+    
+    if (addShapeBtn) {
+        addShapeBtn.addEventListener('click', () => {
+            const shape = shapeSelect.value;
+            const x = parseInt(cursorXInput.value, 10);
+            const y = parseInt(cursorYInput.value, 10);
+            const size = parseInt(sizeInput.value, 10);
+            const color = colorPicker.value;
+
+            console.log({ shape, x, y, size, color });
+
+            fetch('/add_shape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shape, x, y, size, color }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert("Error: " + data.error);
+                }
+            })
+            .catch(err => console.error("Request failed:", err));
+        });
+    } else {
+        console.log('Add Shape button not found.');
+    }
 });
 
 // Clear the canvas on button click
@@ -177,83 +207,73 @@ toggleSidebarBtn.addEventListener('click', () => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Get references to the button and inputs
+document.addEventListener('DOMContentLoaded', function () {
     const addShapeBtn = document.getElementById('addShapeBtn');
     const shapeSelect = document.getElementById('shapeSelect');
     const cursorXInput = document.getElementById('cursorX');
     const cursorYInput = document.getElementById('cursorY');
     const sizeInput = document.getElementById('size');
     const colorPicker = document.getElementById('colorPicker');
-    const canvas = document.getElementById('drawingCanvas');
-    const ctx = canvas.getContext('2d');
-
+    
     if (addShapeBtn) {
         addShapeBtn.addEventListener('click', () => {
-            // Collect user input
             const shape = shapeSelect.value;
             const x = parseInt(cursorXInput.value, 10);
             const y = parseInt(cursorYInput.value, 10);
             const size = parseInt(sizeInput.value, 10);
             const color = colorPicker.value;
 
-            // Validate inputs
-            if (isNaN(x) || isNaN(y) || isNaN(size) || size <= 0) {
-                alert("Please provide valid values for X, Y, and size (greater than 0).");
-                return;
-            }
+            // Print shape data to debug
+            console.log("Sending data to server:", { shape, x, y, size, color });
 
-            // Send data to the backend
+            // Send shape data to the server
             fetch('/add_shape', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ shape, x, y, size, color }),
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        // Draw the shape on the canvas
-                        drawShapeOnCanvas(ctx, shape, x, y, size, color);
-                        console.log('Shape added successfully:', data);
-                    } else {
-                        alert(`Error adding shape: ${data.error}`);
-                    }
-                })
-                .catch((err) => {
-                    console.error('Request failed:', err);
-                    alert('An error occurred while adding the shape.');
-                });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);  // Success alert
+                    // After success, draw shape on canvas
+                    drawShapeOnCanvas(shape, x, y, size, color); 
+                } else {
+                    alert("Error: " + data.error);  // Error message
+                }
+            })
+            .catch(err => console.error("Request failed:", err));
         });
-    } else {
-        console.error("Add Shape button not found in the DOM.");
-    }
-
-    // Helper function to draw shapes on the canvas
-    function drawShapeOnCanvas(ctx, shape, x, y, size, color) {
-        ctx.fillStyle = color;
-        ctx.beginPath();
-
-        switch (shape) {
-            case 'circle':
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-                break;
-            case 'rectangle':
-                ctx.fillRect(x - size / 2, y - size / 2, size * 2, size);
-                break;
-            case 'square':
-                ctx.fillRect(x - size / 2, y - size / 2, size, size);
-                break;
-            case 'line':
-                ctx.moveTo(x, y);
-                ctx.lineTo(x + size, y);
-                ctx.strokeStyle = color;
-                ctx.stroke();
-                break;
-            default:
-                alert("Unknown shape type selected.");
-        }
-
-        ctx.closePath();
     }
 });
+
+// Function to update the canvas with the new shape
+function drawShapeOnCanvas(shape, x, y, size, color) {
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+
+    switch(shape) {
+        case "circle":
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+        case "square":
+            ctx.fillRect(x - size / 2, y - size / 2, size, size);
+            break;
+        case "rectangle":
+            ctx.fillRect(x - size, y - size / 2, size * 2, size);
+            break;
+        case "line":
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + size, y);
+            ctx.stroke();
+            break;
+        default:
+            console.log("Unknown shape: " + shape);
+    }
+
+    ctx.closePath();
+}
