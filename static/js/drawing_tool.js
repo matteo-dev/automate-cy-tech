@@ -9,6 +9,8 @@ const shapeSelect = document.getElementById('shapeSelect');
 const cursorXInput = document.getElementById('cursorX');
 const cursorYInput = document.getElementById('cursorY');
 const sizeInput = document.getElementById('size');
+const takeasaveBtn = document.getElementById('takeasaveBtn');
+const element = document.getElementById('drawingCanvas'); 
 
 // Default values for drawing properties
 let cursorPosition = { x: 0, y: 0 };
@@ -166,6 +168,22 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         console.log('Add Shape button not found.');
     }
+});
+
+// Button to take a capture like a save 
+takeasaveBtn.addEventListener('click', () => {
+    html2canvas(element).then(canvas => {
+        // Convertir le canvas en image
+        const screenshot = canvas.toDataURL('image/png');
+
+        // Créer un lien pour télécharger l'image
+        const link = document.createElement('a');
+        link.href = screenshot;
+        link.download = 'save.png';
+        link.click();
+    }).catch(err => {
+        console.error('Erreur lors de la capture de l\'écran :', err);
+    });
 });
 
 // Clear the canvas on button click
