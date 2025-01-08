@@ -1,5 +1,5 @@
 // Commands.js - Handles Draw++ commands parsing and execution
-
+ 
 // Global States
 let cursorPosition = { x: 0, y: 0 }; // Default cursor position
 let currentColor = "#000000"; // Default color
