@@ -1,4 +1,6 @@
+import os
 from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import request
 import sqlite3
 from datetime import datetime
 import ctypes  # For C integration
@@ -89,6 +91,20 @@ def call_c_function(shape, x, y, size, color):
         print("Error calling C function:", e)
         return False
 
+# Flask route for save a page
+@app.route('/save_page', methods=['POST'])
+def save_page():
+    # Content HTML for request POST
+    page_content = request.json.get("html")
+    
+    # Save road
+    save_path = "saved_page.html"
+
+    # Save the content of the file
+    with open(save_path, "w", encoding="utf-8") as f:
+        f.write(page_content)
+    return jsonify({"message": "Page sauvegardée avec succès !", "path": save_path})
+    
 # Flask route for adding a shape
 @app.route('/add_shape', methods=['POST'])
 def add_shape():
