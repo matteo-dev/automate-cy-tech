@@ -100,6 +100,32 @@ function validateCommand(command, lineNumber) {
     return null; // Valid command
 }
 
+
+//Function to save a page
+function savePage() {
+    // Extract HTML content
+    const pageContent = document.documentElement.outerHTML;
+
+    // Send HTML content to flask
+    fetch('/save_page', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ html: pageContent }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+        alert(`Page sauvegardée avec succès ! Fichier : ${data.path}`);
+    })
+    .catch(error => {
+        console.error('Erreur lors de la sauvegarde de la page :', error);
+        alert('Une erreur est survenue lors de la sauvegarde de la page.');
+    });
+}
+document.getElementById('save-file').addEventListener('click', savePage);
+
 // Validates all commands and returns an array of error messages
 function validateCommands(commands) {
     const errors = [];
