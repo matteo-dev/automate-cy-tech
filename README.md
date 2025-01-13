@@ -76,6 +76,116 @@ Ce sont les valeurs numériques ou les valeurs de propriété qui peuvent appara
 e. Formes
 - Ces tokens représentent les différentes formes à dessiner : segment, circle, square, arc, point.
 
+## Fichiers principaux
+
+Structure du Projet
+
+Voici un aperçu des fichiers principaux du projet :
+
+Fichiers Principaux
+
+1. app.py
+
+Ce fichier est le point d'entrée principal du projet. Il initialise le programme et gère l'exécution principale en coordonnant les autres modules.
+
+2. parser.py
+
+Implémente un analyseur syntaxique (parser) pour vérifier et structurer les entrées selon les règles définies par le langage cible.
+
+3. lexer.py
+
+Ce module implémente l'analyseur lexical (lexer), divisant l'entrée en unités lexicales ou "tokens".
+
+4. interpreter.py
+
+Ce module prend le code analysé et l'exécute en suivant les règles définies pour interpréter le langage cible.
+
+5. code_generator.py
+
+Génère du code ou des instructions basées sur les données analysées par le parser.
+
+6. shapes.py
+
+Contient des fonctions utilitaires ou des classes utilisées dans d'autres modules.
+
+7. interface.py
+
+Fournit une interface utilisateur pour interagir avec le système.
+
+8. errod_handling.py
+
+Gère les erreurs rencontrées lors du lexing, parsing ou de l'interprétation.
+
+## Installation necesssaires 
+
+Prérequis
+
+Python 3.x
+
+Modules listés dans requirements.txt
+
+Étapes d'installation
+
+Cloner le dépôt :
+
+git clone https://github.com/matteo-dev/automate-cy-tech.git
+
+Naviguer dans le répertoire du projet :
+
+cd automate-cy-tech
+
+Installer les dépendances :
+
+pip install -r requirements.txt
+
+## Comment utiliser 
+
+Utilisation
+
+Commandes principales
+
+Pour exécuter le programme principal :
+
+python app.py
+
+Pour exécuter les tests :
+
+python -m unittest discover
+
+Exemples :
+
+voir la video et aller a la toute fin!
+
+## Configuration
+
+Fichiers VSCode
+
+Des fichiers dans .vscode/ sont inclus pour configurer l'environnement de développement avec VSCode, comme settings.json, launch.json, et tasks.json.
+
+## Comment Contribuer
+
+Étapes pour contribuer
+
+Forkez le dépôt.
+
+Créez une branche pour votre fonctionnalité :
+
+git checkout -b ma-nouvelle-fonctionnalite
+
+Faites vos modifications et ajoutez-les :
+
+git add .
+
+Commitez vos changements :
+
+git commit -m "Ajout d'une nouvelle fonctionnalité"
+
+Poussez votre branche :
+
+git push origin ma-nouvelle-fonctionnalite
+
+Ouvrez une Pull Request.
+
 ## Auteurs
 
 - Aicha
