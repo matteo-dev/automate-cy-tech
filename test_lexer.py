@@ -17,3 +17,20 @@ if __name__ == "__main__":
         if line.strip():  # Ignore les lignes vides
             tokens = tokenize(line)  # Appelle la fonction de tokenisation
             print(tokens)  # Affiche la liste des tokens reconnus pour chaque ligne
+        
+# Test cases
+drawpp_code = [
+    "for i from 0 to 5 { drawCircle(); }",  # Simple for loop
+    "while x < 10 { move(10, 0); }",        # Simple while loop
+    "if condition { drawSquare(); } else { drawCircle(); }",  # Mixed test
+]
+
+for code in drawpp_code:
+    print(f"Testing code: {code}")
+    try:
+        tokens = tokenize(code)
+        for token in tokens:
+            print(token)
+    except ValueError as e:
+        print(f"Error: {e}")
+    print("-" * 40)

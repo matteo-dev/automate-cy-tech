@@ -122,3 +122,11 @@ if __name__ == "__main__":
     with open("output.c", "w") as file:
         file.write(c_code)
     print("Code C généré avec succès dans output.c")
+
+def generate_for_loop(loop):
+    return f"for (int {loop['variable']} = {loop['start']}; {loop['variable']} <= {loop['end']}; {loop['variable']}++) {{\n" \
+           + "\n".join(generate_code(cmd) for cmd in loop['body']) + "\n}"
+
+def generate_while_loop(loop):
+    return f"while ({loop['condition']}) {{\n" \
+           + "\n".join(generate_code(cmd) for cmd in loop['body']) + "\n}"

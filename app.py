@@ -187,15 +187,27 @@ def code_editor():
         if request.method == 'POST':
             updated_code = request.form.get('draw_code', '').strip()
 
-            # Validate the code (basic validation example)
+            # Validate the code with the parser
             if not updated_code:
                 return jsonify({"success": False, "error": "Code cannot be empty."}), 400
 
-            # Save the updated code to file
-            with open(CODE_FILE_PATH, 'w') as file:
-                file.write(updated_code)
+            # Process the code using the parser
+            from lexer import tokenize
+            from parser import parse_commands
 
-            return jsonify({"success": True, "message": "Code saved successfully."})
+            try:
+                # Tokenize and parse the code
+                tokens = tokenize(updated_code)
+                parsed_commands = parse_commands(tokens)
+
+                # Save the updated code if no errors
+                with open(CODE_FILE_PATH, 'w') as file:
+                    file.write(updated_code)
+
+                return jsonify({"success": True, "message": "Code validated and saved successfully!"})
+
+            except SyntaxError as e:
+                return jsonify({"success": False, "error": str(e)}), 400
 
     except Exception as e:
         print(f"Error in /code-editor route: {e}")
@@ -210,45 +222,195 @@ def apply_draw_code():
     if not draw_code:
         return jsonify({'success': False, 'error': 'No Draw++ code provided.'}), 400
 
+    # Validate braces balance
+    open_braces = draw_code.count("{")
+    close_braces = draw_code.count("}")
+    if open_braces != close_braces:
+        return jsonify({
+            'success': False,
+            'error': f"Unmatched braces: {open_braces} '{{' and {close_braces} '}}'."
+        }), 400
+
     try:
         commands = []  # Parsed commands for the canvas
         cursor_position = {"x": 0, "y": 0}  # Default cursor position
         current_color = "#000000"  # Default color
 
+        # Stack to manage braces and loops
+        block_stack = []
+        context = {"cursor": cursor_position}  # Variable context for dynamic variable resolution
+        line_number = 0
+
         for line in draw_code.strip().split('\n'):
-            parts = line.strip().split()
+            line_number += 1
+            line = line.strip()
+            if not line:
+                continue
+
+            print(f"Processing line {line_number}: {line}")
+            print(f"Current block stack: {block_stack}")
+
+            parts = line.split()
             command = parts[0].lower()
 
-            if command == "cursor":
-                cursor_position = {"x": int(parts[1]), "y": int(parts[2])}
-            elif command == "set_color":
-                current_color = parts[1]
-            elif command in ["circle", "square", "rectangle", "line"]:
-                x = cursor_position["x"]
-                y = cursor_position["y"]
-                size = int(parts[1])
-                color = current_color
+            if command == "for":
+                # Start a loop block
+                if len(parts) < 6:
+                    raise ValueError(f"Invalid 'for' syntax at line {line_number}.")
+                variable = parts[1]
+                start = int(parts[3])
+                end = int(parts[5])
+                block_stack.append({
+                    "type": "for",
+                    "variable": variable,
+                    "start": start,
+                    "end": end,
+                    "body": [],
+                    "line": line_number
+                })
 
-                if command == "circle":
-                    commands.append({"shape": "circle", "x": x, "y": y, "size": size, "color": color})
-                elif command == "square":
-                    commands.append({"shape": "square", "x": x, "y": y, "size": size, "color": color})
-                elif command == "rectangle":
-                    commands.append({"shape": "rectangle", "x": x, "y": y, "size": size, "color": color})
-                elif command == "line":
-                    commands.append({"shape": "line", "x": x, "y": y, "size": size, "color": color})
-            elif command == "move_cursor":
-                cursor_position["x"] += int(parts[1])
-                cursor_position["y"] += int(parts[2])
-            elif command == "rotate_cursor":
-                pass  # Future implementation: handle rotation logic
+            elif command == "while":
+                condition = ' '.join(parts[1:]).rstrip('{').strip()
+
+                resolved_condition = resolve_variables(condition, context)
+                print(f"Resolved Condition: {resolved_condition}")  # Debugging
+
+                # Validate cursor conditions
+                if "cursor[" in condition and "]" in condition:
+                    key = condition.split('["')[1].split('"]')[0]  # Extract key inside brackets
+                    if key not in cursor_position:
+                        raise ValueError(f"Invalid cursor key: {key}")
+
+                block_stack.append({
+                    "type": "while",
+                    "condition": condition,
+                    "body": [],
+                    "line": line_number
+                })
+
+            elif command == "{":
+                block_stack.append({"type": "block_start", "body": [], "line": line_number})
+
+            elif command == "}":
+                # End the current block
+                if not block_stack:
+                    print(f"Error: Unmatched '}}' at line {line_number}")  # Debugging
+                    return jsonify({
+                        'success': False,
+                        'error': f"Unmatched '}}' at line {line_number}."
+                    }), 400
+
+                block = block_stack.pop()
+                print(f"Closing Block: {block}")  # Debugging
+
+                if block["type"] == "for":
+                    for i in range(block["start"], block["end"] + 1):
+                        context[block["variable"]] = i  # Set the loop variable
+                        for nested_command in block["body"]:
+                            processed_command = resolve_variables(nested_command, context)
+                            process_command(processed_command, commands, cursor_position, current_color)
+                elif block["type"] == "while":
+                    condition = block["condition"]
+                    print(f"Evaluating condition: {condition}")
+                    print(f"Cursor position: {cursor_position}")
+                    resolved_condition = resolve_variables(condition, context)
+                    print(f"Resolved condition for eval: {resolved_condition}")
+                    while eval(resolve_variables(condition, context), {"cursor": cursor_position}, context):
+                        for nested_command in block["body"]:
+                            processed_command = resolve_variables(nested_command, context)
+                            process_command(processed_command, commands, cursor_position, current_color)
+                else:
+                    raise ValueError(f"Unexpected block type: {block['type']}")
+
+            elif block_stack:
+                # Add lines to the current block's body
+                block_stack[-1]["body"].append(line)
+
+            else:
+                # Process a standalone command
+                processed_command = resolve_variables(line, context)
+                process_command(processed_command, commands, cursor_position, current_color)
+
+        if block_stack:
+            # Check for unmatched opening blocks
+            last_block = block_stack[-1]
+            return jsonify({
+                'success': False,
+                'error': f"Unmatched '{{' opened at line {last_block['line']}."
+            }), 400
 
         return jsonify({'success': True, 'commands': commands})
     except Exception as e:
+        print(f"Error processing draw code: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+def resolve_variables(command, context):
+    print(f"Resolving command: {command}")  # Debugging output
+    parts = command.split()
+    resolved_parts = []
+
+    for part in parts:
+        original_part = part
+        part = part.rstrip(';')  # Remove trailing semicolon
+
+        if "cursor[" in part and "]" in part:
+            # Handle cursor key resolution
+            try:
+                key = part.split('["')[1].split('"]')[0]
+                resolved_value = context["cursor"].get(key, None)
+                print(f"Resolving part: {part}, Key: {key}, Resolved Value: {resolved_value}")  # Debugging
+                if resolved_value is None:
+                    raise ValueError(f"Unknown key '{key}' in cursor context.")
+                resolved_parts.append(str(resolved_value))
+                print(f"Resolved cursor key '{key}' to {resolved_value}")  # Debugging output
+            except IndexError:
+                raise ValueError(f"Malformed cursor key in: {original_part}")
+        elif part == "cursor":
+            # If "cursor" is used alone, do not resolve it to the entire dictionary
+            print(f"Skipping resolution for part: {part}")  # Debugging
+            resolved_parts.append(part)
+        else:
+            # Handle other variables or pass unchanged
+            resolved_value = context.get(part, part)
+            resolved_parts.append(str(resolved_value))
+            print(f"Resolved part: {original_part}, Resolved Value: {resolved_value}")  # Debugging output
+
+    resolved_command = ' '.join(resolved_parts)
+    print(f"Resolved Command: {command} -> {resolved_command}")  # Debugging output
+    return resolved_command
+
+def execute_command(command, parts, commands, cursor_position, current_color, execution_context):
+    """Handles execution of individual commands."""
+    if command == "cursor":
+        x = int(parts[1]) if parts[1].isdigit() else execution_context.get(parts[1], 0)
+        y = int(parts[2]) if parts[2].isdigit() else execution_context.get(parts[2], 0)
+        cursor_position["x"] = x
+        cursor_position["y"] = y
+    elif command == "set_color":
+        current_color = parts[1]
+    elif command in ["circle", "square", "rectangle", "line"]:
+        x = cursor_position["x"]
+        y = cursor_position["y"]
+        size = int(parts[1])
+        color = current_color
+        if command == "circle":
+            commands.append({"shape": "circle", "x": x, "y": y, "size": size, "color": color})
+        elif command == "square":
+            commands.append({"shape": "square", "x": x, "y": y, "size": size, "color": color})
+        elif command == "rectangle":
+            width = int(parts[1])
+            height = int(parts[2])
+            commands.append({"shape": "rectangle", "x": x, "y": y, "width": width, "height": height, "color": color})
+        elif command == "line":
+            commands.append({"shape": "line", "x": x, "y": y, "size": size, "color": color})
+    elif command == "move_cursor":
+        cursor_position["x"] += int(parts[1])
+        cursor_position["y"] += int(parts[2])
+    elif command == "rotate_cursor":
+        # Placeholder for future rotation logic
+        pass
+    else:
+        raise ValueError(f"Unknown command: {command}")
 
 def validate_command(command: str) -> str:
     """
@@ -324,3 +486,115 @@ def execute_code():
 
     # If no errors, log success
     return jsonify({"success": True, "message": "Draw++ code applied successfully!"})
+
+from lexer import tokenize
+from parser import parse_for_loop, parse_while_loop, parse_body, parse_commands
+
+@app.route('/process-command', methods=['POST'])
+def handle_commands():
+    draw_code = request.json.get('commands', '')  # Get commands from frontend
+    context = {}  # Initialize context
+
+    try:
+        # Tokenize and parse the commands
+        from lexer import tokenize
+        from parser import parse_commands
+
+        tokens = tokenize(draw_code)
+        parsed_commands = parse_commands(tokens)
+
+        # Execute parsed commands
+        for cmd in parsed_commands:
+            process_command(cmd, context)  # Use the recursive processing function
+
+        return jsonify({"success": True, "message": "Commands executed successfully!"})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+def process_command(command, commands, cursor_position, current_color):
+    parts = command.strip().split()
+    cmd_name = parts[0].lower()
+    print(f"Executing Command: {cmd_name}, Parts: {parts}, Cursor Position: {cursor_position}, Current Color: {current_color}")  # Debugging
+
+    if cmd_name == "cursor":
+        # Set absolute cursor position
+        x = int(parts[1])
+        y = int(parts[2])
+        cursor_position["x"] = x
+        cursor_position["y"] = y
+        print(f"Updated Cursor Position: {cursor_position}")  # Debugging
+
+    elif cmd_name == "set_color":
+        # Update the current drawing color
+        current_color = parts[1]
+        print(f"Set Current Color to: {current_color}")  # Debugging
+
+    elif cmd_name == "move_cursor":
+        # Move cursor relative to its current position
+        dx = int(parts[1])
+        dy = int(parts[2])
+        cursor_position["x"] += dx
+        cursor_position["y"] += dy
+        print(f"Moved Cursor Position: {cursor_position}")  # Debugging
+
+    elif cmd_name in ["circle", "square"]:
+        # Draw a circle or square
+        size = int(parts[1])
+        commands.append({
+            "shape": cmd_name,
+            "x": cursor_position["x"],
+            "y": cursor_position["y"],
+            "size": size,
+            "color": current_color,
+        })
+        print(f"Added Command: {commands[-1]}")  # Debugging
+
+    elif cmd_name == "rectangle":
+        # Draw a rectangle
+        width = int(parts[1])
+        height = int(parts[2])
+        commands.append({
+            "shape": "rectangle",
+            "x": cursor_position["x"],
+            "y": cursor_position["y"],
+            "width": width,
+            "height": height,
+            "color": current_color,
+        })
+        print(f"Added Command: {commands[-1]}")  # Debugging
+
+    elif cmd_name == "line":
+        # Draw a line
+        length = int(parts[1])
+        commands.append({
+            "shape": "line",
+            "x": cursor_position["x"],
+            "y": cursor_position["y"],
+            "length": length,
+            "color": current_color,
+        })
+        print(f"Added Command: {commands[-1]}")  # Debugging
+
+    else:
+        raise ValueError(f"Unknown Command: {cmd_name}")
+
+def process_line(line, context):
+    parts = line.strip().split()
+    command = parts[0].lower()
+
+    if command == "cursor":
+        x = int(parts[1]) if parts[1].isdigit() else context.get(parts[1], 0)
+        y = int(parts[2]) if parts[2].isdigit() else context.get(parts[2], 0)
+        return {"action": "cursor", "x": x, "y": y}
+    elif command == "circle":
+        size = int(parts[1])
+        return {"action": "circle", "size": size}
+    elif command == "square":
+        size = int(parts[1])
+        return {"action": "square", "size": size}
+    else:
+        raise ValueError(f"Unknown command in process_line: {command}")
+
+if __name__ == '__main__':
+    app.run(debug=True)

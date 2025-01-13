@@ -69,5 +69,14 @@ class TestParser(unittest.TestCase):
         with self.assertRaises(SyntaxError):
             parse(tokens)
 
-if __name__ == '__main__':
-    unittest.main()
+    if __name__ == '__main__':
+        unittest.main()
+        from parser import parse_commands
+
+    tokens = [
+        ('KEYWORD', 'for'), ('IDENTIFIER', 'i'), ('KEYWORD', 'from'), ('NUMBER', '0'),
+        ('KEYWORD', 'to'), ('NUMBER', '5'), ('SYMBOL', '{'),
+        ('KEYWORD', 'circle'), ('NUMBER', '50'), ('SYMBOL', '}')
+    ]
+    parsed = parse_commands(tokens)
+    print("Parsed Commands:", parsed)

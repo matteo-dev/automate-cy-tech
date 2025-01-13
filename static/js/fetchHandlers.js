@@ -75,30 +75,35 @@ function loadDrawing(drawingId) {
 
 // Apply Draw++ code from the editor
 function applyDrawCode(drawCode) {
+    console.log("Sending Draw++ Code to Backend:", drawCode);
+
     fetch('/apply-draw-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ draw_code: drawCode })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                updateCanvas(data.commands); // Use the updateCanvas function from canvas.js
-                alert("Draw++ code applied successfully!");
-            } else {
-                alert(`Error: ${data.error}`);
-            }
-        })
-        .catch(error => {
-            console.error("Error applying Draw++ code:", error);
-            alert("An error occurred while applying the Draw++ code.");
-        });
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                throw new Error(errorData.error);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            updateCanvas(data.commands);
+            alert("Draw++ code applied successfully!");
+        } else {
+            alert(`Error: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        console.error("Error applying Draw++ code:", error.message);
+        alert(`Error: ${error.message}`);
+    });
 }
+
 
 // Add a shape via the backend
 function addShape(shapeData) {

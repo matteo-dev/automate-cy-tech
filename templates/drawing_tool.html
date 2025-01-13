@@ -56,10 +56,35 @@
         <div id="tab-content-container">
             <!-- Code Editor Tab Content -->
             <div class="tab-content active" id="editor-content">
-                <form method="POST" id="codeEditorForm">
-                    <textarea name="draw_code" id="codeEditor" style="width: 100%; height: 300px;"></textarea>
-                    <button type="button" id="applyCodeBtn">Apply Code</button>
-                </form>
+                <div style="display: flex; gap: 20px;">
+                    <!-- Code Editor -->
+                    <form method="POST" id="codeEditorForm" style="flex: 1;">
+                        <textarea name="draw_code" id="codeEditor" style="width: 100%; height: 300px;"></textarea>
+                        <button type="button" id="applyCodeBtn">Apply Code</button>
+                    </form>
+                    <!-- Syntax Examples -->
+                    <div id="syntax-examples" style="flex: 0.5; background: #1f1f1f; color: #fff; padding: 10px; border-radius: 8px;">
+                        <h3>Syntax Examples</h3>
+                        <pre>
+// Move the cursor
+cursor 100 100
+
+// Set the color
+set_color #FF0000
+
+// Draw shapes
+circle 50
+square 75
+rectangle 100 50
+
+// Draw a line
+line 150
+
+// Move cursor relative
+move_cursor 50 -30
+                        </pre>
+                    </div>
+                </div>
             </div>
 
             <!-- Canvas Tab Content -->
@@ -115,7 +140,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 Automate CY Tech | About | Contact Us</p>
+
     </footer>
 
     <!-- Include JavaScript Files -->
